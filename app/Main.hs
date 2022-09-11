@@ -230,7 +230,7 @@ gqlDeclaration =
 
 main :: IO ()
 main = do
-  file <- readFile "enum-schema.gql"
+  file <- readFile "schema.gql"
   putStr file
-  x <- parseTest (some gqlDeclaration) file
+  x <- parseTest (skipSpace *> some gqlDeclaration) file
   putStr $ show x
