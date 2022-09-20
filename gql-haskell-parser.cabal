@@ -7,10 +7,11 @@ extra-source-files: CHANGELOG.md
 
 library
     main-is:          Main.hs
-    hs-source-dirs:   app
+    hs-source-dirs:   app, app/token-parsers
     default-language: Haskell2010
     build-depends:    base ^>=4.14.3.0, 
-                      megaparsec ^>=9.2
+                      megaparsec ^>=9.2, 
+                      unicode-data
     exposed-modules:
         Main
         Parser
