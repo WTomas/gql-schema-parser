@@ -9,6 +9,7 @@ import Data.Void (Void)
 import FloatParser
 import IntegerParser
 import NameParser
+import StringParser
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -52,22 +53,6 @@ punctuator =
         string "|"
       ]
 
-escape :: Parser String
-escape = do
-  d <- char '\\'
-  c <- oneOf ['\\', '"', '\'', 'n', 't']
-  return [d, c]
-
-nonEscape :: Parser Char
-nonEscape = noneOf ['\\', '\"', '\'', '\n', '\t']
-
-stringValue :: Parser GqlToken
-stringValue = do
-  let inner = return <$> try nonEscape <|> escape
-   in do
-        strings <- between (char '"') (char '"') (many inner)
-        pure $ StringValue $ concat strings
-
 gqlToken :: Parser GqlToken
 gqlToken =
   choice
@@ -75,7 +60,7 @@ gqlToken =
       Name <$> name,
       FloatValue <$> floatValue,
       IntValue <$> intValue,
-      stringValue
+      StringValue <$> stringValue
     ]
 
 description :: Parser Description
@@ -87,5 +72,5 @@ description = do
 
 main :: IO ()
 main = do
-  parsed <- parseTest (some (description)) "\"\"\"SomeDescription\"\"\""
+  parsed <- parseTest gqlToken "null"
   putStr $ show parsed
